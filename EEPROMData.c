@@ -1,4 +1,5 @@
 #include "EEPROM.h"
+#include "EEPROMData.h"
 
 //Addresses start at MIN_EEPROM_ADDR to avoid overwriting program memory
 const uint16_t MIN_EEPROM_ADDR = 32768;
@@ -19,7 +20,7 @@ void setPacketCount(uint8_t packetCount) {
 void incrementPacketCount(uint8_t inc) {
   uint16_t address = MIN_EEPROM_ADDR + PACKET_COUNT_OFFSET;
   uint8_t packetCount = getPacketCount();
-  setPacketCount(address, packetCount + inc)
+  setPacketCount(packetCount + inc);
 }  
 
 //reads pc from eeprom

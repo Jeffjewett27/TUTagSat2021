@@ -6,7 +6,7 @@
 #include "simpletools.h"
 #include "fdserial.h"
 #include "SerialOutput.h"
-#include "EEPROM.h"
+#include "EEPROMData.h"
 
 const int BYTES_PER_PACKET = 35;
 const char ACK[] = {0xAA, 0x05, 0x00};

@@ -1,3 +1,5 @@
+#include "simpletools.h"
+
 //stores pc in the eeprom
 void setPacketCount(uint8_t pc);
 

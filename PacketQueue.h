@@ -12,7 +12,7 @@ struct PacketNode{
   Packet value;
   struct PacketNode *next;
 };
-typedef struct node node;
+typedef struct PacketNode PacketNode;
 #endif
 
 #ifndef QUEUE_STRUCT
@@ -20,8 +20,8 @@ typedef struct node node;
 //a queue, duh
 struct PacketQueue{
   int size;
-  node *front;
-  node *back;
+  PacketNode *front;
+  PacketNode *back;
 };
 typedef struct PacketQueue PacketQueue;
 #endif
