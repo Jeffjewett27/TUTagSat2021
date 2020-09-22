@@ -1,0 +1,4 @@
+**/cmm
+*.elf
+*.binary
+*.pdf
