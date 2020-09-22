@@ -1,3 +1,6 @@
+#ifndef EEPROM_DATA
+#define EEPROM_DATA
+
 //stores pc in the eeprom
 void setPacketCount(uint8_t pc);
 
@@ -14,3 +17,5 @@ void resetOnCheck();
 
 //checks if unique value has been set
 uint8_t isOnCheckSet();
+
+#endif

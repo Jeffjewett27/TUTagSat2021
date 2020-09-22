@@ -3,6 +3,9 @@
  * Modification Date: 5/10/20
 */
 
+#ifndef SERIAL_OUTPUT
+#define SERIAL_OUTPUT
+
 #include "PacketQueue.h"
 
 //starts the serial output thread
@@ -22,3 +25,5 @@ int isSerialACK();
 
 //is busy
 int isSerialBusy();
+
+#endif

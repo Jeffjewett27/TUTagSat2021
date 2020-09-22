@@ -3,6 +3,9 @@
  * Modification Date: 9/22/20
 */
 
+#ifndef EEPROM
+#define EEPROM
+
 //initializes the i2c connection
 void eepromInitI2C();
 
@@ -13,3 +16,5 @@ void eepromWriteUint8(uint16_t address, uint8_t data);
 void eepromReadArray(uint16_t address, uint8_t *buffer, int numBytes);
 
 uint8_t eepromReadUint8(uint16_t address);
+
+#endif

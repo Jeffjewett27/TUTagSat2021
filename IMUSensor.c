@@ -1,6 +1,6 @@
 /*
  * Author: Isaac Wickham and Jeff Jewett
- * Modification Date: 5/10/20
+ * Modification Date: 9/22/20
 */
 
 #include "lsm9ds1.h"
@@ -17,55 +17,45 @@ const int IMU_CS_AG = 2;
 const int IMU_CS_M = 3;
 
 void imuInitialize() {
-  //Parameters: imu_init(scl, sdio, cs_ag, cs_m)
-  int val = imu_init(IMU_SCL, IMU_SDIO, IMU_CS_AG, IMU_CS_M);
+  // Success: 0x683D, Failure: 0
+  imu_init(IMU_SCL, IMU_SDIO, IMU_CS_AG, IMU_CS_M);
 }
   
-//unit: g's
+//Unit: g's
 Vector3 imuAccelerometerRead() {
-  float _imuX, _imuY, _imuZ;
   Vector3 acceleration;
-  imu_readAccelCalculated(&_imuX, &_imuY, &_imuZ);
-  acceleration.x = _imuX;
-  acceleration.y = _imuY;
-  acceleration.z = _imuZ;
+  imu_readAccelCalculated(&(acceleration.x), &(acceleration.y), &(acceleration.z));
   return acceleration;
 }  
 
-//units: degrees per second
+//Unit: Degrees of rotation per second
 Vector3 imuGyroscopeRead() {
-  float _imuX, _imuY, _imuZ;
   Vector3 gyroscope;
-  imu_readGyroCalculated(&_imuX, &_imuY, &_imuZ);
-  gyroscope.x = _imuX;
-  gyroscope.y = _imuY;
-  gyroscope.z = _imuZ;
+  imu_readGyroCalculated(&(gyroscope.x), &(gyroscope.y), &(gyroscope.z));
   return gyroscope;
 }  
 
-//units: degrees per second
+//Unit: Gauss
 Vector3 imuMagnetometerRead() {
-  float _imuX, _imuY, _imuZ;
   Vector3 magnet;
-  imu_readMagCalculated(&_imuX, &_imuY, &_imuZ);
-  magnet.x = _imuX;
-  magnet.y = _imuY;
-  magnet.z = _imuZ;
+  imu_readMagCalculated(&(magnet.x), &(magnet.y), &(magnet.z));
   return magnet;
 } 
 
-//units: celcius
+//Unit: Degrees Celsius
 float imuTemperatureRead() {
-  float _temp;
-  imu_readTempCalculated(&_temp, 0); //read celcius into _temp
-  return _temp;
+  float temperature;
+  imu_readTempCalculated(&temperature, CELSIUS);
+  return temperature;
 } 
 
 void imuCalibrateMagnetometer() {
+  // TODO: Figure out the purposes behind these variables and checks
+    // Then rewrite this function
   int i = 0, j, mx, my, mz;
   char ck0 = 0, ck1 = 0, ck2 = 0, ck3 = 0, ck4 = 0, ck5 = 0, ck6 = 0, ck7 = 0, ck8 = 0;
   int magMin[3] = {0, 0, 0};
-  int magMax[3] = {0, 0, 0}; // The road warrior
+  int magMax[3] = {0, 0, 0};
   
   float ax, ay, az;
     
