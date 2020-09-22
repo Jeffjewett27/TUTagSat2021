@@ -26,27 +26,27 @@ void stopLightGammaThread() {
   cog_end(lgCog);
 }  
   
-void gamma_initialize() {
+void gammaInitialize() {
   gCount = 0;
   gOverflow = 0;
   gReset = 0;
 }
 
-void light_initialize() {
+void lightInitialize() {
   lCount = 0;
   lOverflow = 0;
   lReset = 0;
 }
 
 //run the gamma light sensor, started by 'startLightGammaThread'
-void gamma_light_thread() {
+void gammaLightThread() {
   int gFreeze = 0;
   int lFreeze = 0;
-  gamma_initialize();
-  light_initialize();
+  gammaInitialize();
+  lightInitialize();
   while (1) {
     if (gReset) {
-      gamma_initialize();
+      gammaInitialize();
     }      
     if (gFreeze) {
       gFreeze = 0;
@@ -60,7 +60,7 @@ void gamma_light_thread() {
     }            
     
     if (lReset) {
-      light_initialize();
+      lightInitialize();
     }      
     if (lFreeze) {
       lFreeze = 0;
@@ -74,7 +74,7 @@ void gamma_light_thread() {
   }    
 }  
 
-uint32_t gamma_read_reset() {
+uint32_t gammaReadReset() {
   uint32_t val = gCount;
   if (gOverflow) {
     //if there was an overflow, return max value instead of some lower amount
@@ -84,7 +84,7 @@ uint32_t gamma_read_reset() {
   return val;
 }  
 
-uint32_t lightToFrequency_read_reset() {
+uint32_t lightToFrequencyReadReset() {
   uint32_t val = lCount;
   if (lOverflow) {
     //if there was an overflow, return max value instead of some lower amount

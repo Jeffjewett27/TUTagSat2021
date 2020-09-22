@@ -3,10 +3,10 @@
  * Modification Date: 5/10/20
 */
 
-#include "queue.h"
+#include "PacketQueue.h"
 
 //starts the serial output thread
-void serialOutputThread(queue *pQueue);
+void serialOutputThread(PacketQueue *pQueue);
 
 //forever waits for busy to drop then sends first element of queue
 void serialOutputLoop();
@@ -18,7 +18,7 @@ void initSerial();
 void outputPacket(char* packet);
 
 //waits and returns whether response is ack
-int isACK();
+int isSerialACK();
 
 //is busy
-int isBusy();
+int isSerialBusy();

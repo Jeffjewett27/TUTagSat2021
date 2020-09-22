@@ -1,0 +1,2 @@
+Files in the legacy directory may potentially be of value for reference/reuse,
+but are either descoped or are too different from current goals

@@ -3,8 +3,11 @@
  * Modification Date: 5/10/20
 */
 
+//TODO: abstract packetCount, and byteCheck to different file. 
+//EEPROM.h should only have general functions for reading/writing to EEPROM
+
 //initializes the i2c connection
-void eeprom_initI2C();
+void eepromInitI2C();
 
 //stores pc in the eeprom
 void setPacketCount(uint8_t pc);

@@ -17,7 +17,7 @@ const int SERIAL_RX = 17;
 const int SERIAL_TX = 18;
 
 fdserial *sr;
-queue *packetQueue;
+PacketQueue *packetQueue;
 int *thread;
 
 //initializes pins
@@ -26,7 +26,7 @@ void initSerial() {
 }  
 
 //starts the serial output thread
-void serialOutputThread(queue *pQueue) {
+void serialOutputThread(PacketQueue *pQueue) {
   packetQueue = pQueue;
   initSerial();
   thread = cog_run(serialOutputLoop, 128);
@@ -35,7 +35,7 @@ void serialOutputThread(queue *pQueue) {
 //forever waits for busy to drop then sends first element of queue
 void serialOutputLoop() {
   while(1) {
-    while(isBusy()) {
+    while(isSerialBusy()) {
       pause(100);
     }    
     if (isQueueEmpty(packetQueue)) {
@@ -43,7 +43,7 @@ void serialOutputLoop() {
     }    
     Packet packet = peekQueue(packetQueue);
     outputPacket((char*)&packet);
-    if (isACK()) {
+    if (isSerialACK()) {
       uint8_t packetCount = packet.packetsCounter;
       setPacketCount(packetCount);
       dequeue(packetQueue);
@@ -67,7 +67,7 @@ void outputPacket(char* packet) {
 }
 
 //determines if signal is ACK
-int isACK() {
+int isSerialACK() {
   int numACKBytes = 3;
   char response[numACKBytes];
   for (int i = 0; i < numACKBytes; ++i) {
@@ -92,6 +92,6 @@ int isACK() {
 }  
 
 //checks the busy pin
-int isBusy() {
+int isSerialBusy() {
   return input(BUSY_PIN);
 }  

@@ -15,13 +15,13 @@ const uint8_t controlByte = 0b1010000;  //grants read/write capabilities
 const int EEPROM_SCL = 28;
 const int EEPROM_SDIO = 29;
 
-void eeprom_initI2C() {
+void eepromInitI2C() {
   eeBus = i2c_newbus(EEPROM_SCL,  EEPROM_SDIO,   0); //28 and 29 are i2c pin numbers and 0 is an i2c mode
 }  
 
 void setPacketCount(uint8_t pc) {
   if (eeBus == NULL) {
-    eeprom_initI2C();
+    eepromInitI2C();
   }    
 
   while(i2c_busy(eeBus, controlByte));
@@ -35,7 +35,7 @@ void incrementPacketCount(uint8_t inc) {
 
 uint8_t readPacketCount() {                                   
   if (eeBus == NULL) {
-    eeprom_initI2C();
+    eepromInitI2C();
   } 
   
   while(i2c_busy(eeBus, controlByte));
@@ -47,7 +47,7 @@ uint8_t readPacketCount() {
 
 void setByteCheck() {
   if (eeBus == NULL) {
-    eeprom_initI2C();
+    eepromInitI2C();
   }    
 
   while(i2c_busy(eeBus, controlByte));

@@ -60,3 +60,13 @@ Light to Frequency (pulse count)
 -TODO: locate datasheet
 RGB color detector
 -Which model?
+
+Utilities:
+-.linux-side.sh is a bash script to update the project file (TUSatellite7.side)
+-.powershell-side.ps1 is a powershell script to update the project file (TUSatellite7.side)
+-.side-compile.txt contains information about the SimpleIDE compiler options (leave as default)
+
+-Vector3.h is a 3-vector of floats
+-Packet.h contains header info + 32 bytes of data for a packet
+-PacketQueue.h is a queue data structure which holds packets
+-DataConversion.h contains functions to switch between 32-bit and 16-bit floats (at cost of precision)

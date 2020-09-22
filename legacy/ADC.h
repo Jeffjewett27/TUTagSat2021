@@ -3,6 +3,8 @@
  * Modification Date: 5/10/20
 */
 
+//OBSOLETE: the JM board has 8 analog-to-digital channels
+
 void adc_initI2C();
 void adc_setConfig(uint8_t port);
 uint16_t readAnalog(uint8_t channel);

@@ -16,13 +16,13 @@ const int IMU_SDIO = 1;
 const int IMU_CS_AG = 2;
 const int IMU_CS_M = 3;
 
-void imu_initialize() {
+void imuInitialize() {
   //Parameters: imu_init(scl, sdio, cs_ag, cs_m)
   int val = imu_init(IMU_SCL, IMU_SDIO, IMU_CS_AG, IMU_CS_M);
 }
   
 //unit: g's
-Vector3 imu_accelerometerRead() {
+Vector3 imuAccelerometerRead() {
   float _imuX, _imuY, _imuZ;
   Vector3 acceleration;
   imu_readAccelCalculated(&_imuX, &_imuY, &_imuZ);
@@ -33,7 +33,7 @@ Vector3 imu_accelerometerRead() {
 }  
 
 //units: degrees per second
-Vector3 imu_gyroscopeRead() {
+Vector3 imuGyroscopeRead() {
   float _imuX, _imuY, _imuZ;
   Vector3 gyroscope;
   imu_readGyroCalculated(&_imuX, &_imuY, &_imuZ);
@@ -44,7 +44,7 @@ Vector3 imu_gyroscopeRead() {
 }  
 
 //units: degrees per second
-Vector3 imu_magnetometerRead() {
+Vector3 imuMagnetometerRead() {
   float _imuX, _imuY, _imuZ;
   Vector3 magnet;
   imu_readMagCalculated(&_imuX, &_imuY, &_imuZ);
@@ -55,13 +55,13 @@ Vector3 imu_magnetometerRead() {
 } 
 
 //units: celcius
-float imu_temperatureRead() {
+float imuTemperatureRead() {
   float _temp;
   imu_readTempCalculated(&_temp, 0); //read celcius into _temp
   return _temp;
 } 
 
-void imu_calibrateMagnetometer() {
+void imuCalibrateMagnetometer() {
   int i = 0, j, mx, my, mz;
   char ck0 = 0, ck1 = 0, ck2 = 0, ck3 = 0, ck4 = 0, ck5 = 0, ck6 = 0, ck7 = 0, ck8 = 0;
   int magMin[3] = {0, 0, 0};
