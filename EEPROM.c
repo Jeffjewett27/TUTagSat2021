@@ -18,4 +18,19 @@ void eepromInitI2C() {
   eeBus = i2c_newbus(EEPROM_SCL,  EEPROM_SDA,   0); 
 }  
 
+void eepromWriteArray(uint16_t address, uint8_t *data, int numBytes) {
+}  
+
+void eepromWriteUint8(uint16_t address, uint8_t data) {
+  
+}
+
+void eepromReadArray(uint16_t address, uint8_t *buffer, int numBytes) {
+  
+}  
+
+uint8_t eepromReadUint8(uint16_t address) {
+  return 0;
+}  
+
 //TODO implement EEPROM.h interface

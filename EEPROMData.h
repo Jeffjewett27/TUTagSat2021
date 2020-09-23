@@ -1,6 +1,8 @@
 #ifndef EEPROM_DATA
 #define EEPROM_DATA
 
+#include "simpletools.h"
+
 //stores pc in the eeprom
 void setPacketCount(uint8_t pc);
 

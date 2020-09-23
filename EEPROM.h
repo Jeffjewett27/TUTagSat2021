@@ -7,6 +7,8 @@
 #define EEPROM
 
 //initializes the i2c connection
+#include "simpletools.h"
+
 void eepromInitI2C();
 
 void eepromWriteArray(uint16_t address, uint8_t *data, int numBytes);
