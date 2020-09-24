@@ -59,25 +59,33 @@ void imuCalibrateMagnetometer() {
   
   float ax, ay, az;
     
-  while(i < 128 || (ck0 + ck1 + ck2 + ck3 + ck4 + ck5 + ck6 + ck7 + ck8) < 6)
+  while(i < 128 || (ck0 + ck1 + ck2 + ck3 + ck4 + ck5 + ck6 + ck7 + ck8) < 6) // 
   {
-    while (!imu_magAvailable(ALL_AXIS));
-    imu_readMag(&mx, &my, &mz);
-    int magTemp[3] = {0, 0, 0};
+    while (!imu_magAvailable(ALL_AXIS)); // nothing exocuted within while loop
+
+    imu_readMag(&mx, &my, &mz); // reading mag
+    int magTemp[3] = {0, 0, 0}; // temp holder of mag
+
     magTemp[0] = mx;    
     magTemp[1] = my;
     magTemp[2] = mz;
-    for (j = 0; j < 3; j++)
+
+    for (j = 0; j < 3; j++) // max min tracking
     {
       if (magTemp[j] > magMax[j]) magMax[j] = magTemp[j];
       if (magTemp[j] < magMin[j]) magMin[j] = magTemp[j];
-    }
+    } // end of max min tracking
+    
 
+    // expected to be true?
     if(abs(magMax[0] - magMin[0]) > (12000 / ((int) __settings_mag_scale))) ck6 = 1;
     if(abs(magMax[1] - magMin[1]) > (12000 / ((int) __settings_mag_scale))) ck7 = 1;
     if(abs(magMax[2] - magMin[2]) > (12000 / ((int) __settings_mag_scale))) ck8 = 1;
+    //
 
-    imu_readAccelCalculated(&ax, &ay, &az);
+    imu_readAccelCalculated(&ax, &ay, &az); // actual calibration
+     // G-force 
+    // I wonder if this is to verify that magnitude(accel) ~ 1?
     if(ax > 0.85 && ay < 0.15 && ay > -0.15 && az < 0.15 && az > -0.15) ck0 = 1;
     if(ax < -0.85 && ay < 0.15 && ay > -0.15 && az < 0.15 && az > -0.15) ck1 = 1;
     if(ay > 0.85 && ax < 0.15 && ax > -0.15 && az < 0.15 && az > -0.15) ck2 = 1;
@@ -94,6 +102,7 @@ void imuCalibrateMagnetometer() {
     pause(10);
   }
 
+  // 
   for (j = 0; j < 3; j++)
   {
     __mBiasRaw[j] = (magMax[j] + magMin[j]) / 2;
