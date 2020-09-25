@@ -14,9 +14,9 @@
 
 //a struct to store all the readings being collected
 struct SensorReadings {
-  Vector3 accelerationReadings[NUM_2_BYTE_READINGS];
-  Vector3 gyroscopeReadings[NUM_2_BYTE_READINGS];
-  Vector3 magnetometerReadings[NUM_2_BYTE_READINGS];
+  Vector3f accelerationReadings[NUM_2_BYTE_READINGS];
+  Vector3f gyroscopeReadings[NUM_2_BYTE_READINGS];
+  Vector3f magnetometerReadings[NUM_2_BYTE_READINGS];
   uint16_t uv1Readings[NUM_2_BYTE_READINGS];
   float temp1Readings[NUM_2_BYTE_READINGS];
   uint16_t temp2Readings[NUM_2_BYTE_READINGS];

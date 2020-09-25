@@ -1,14 +1,16 @@
 /*
  * Author: Isaac Wickham and Jeff Jewett
- * Modification Date: 9/22/20
+ * Modification Date: 9/24/20
 */
 
 #include "lsm9ds1.h"
 #include "IMUSensor.h"
 #include "simpletools.h"
+#include <math.h>
 
 int __pinM;
 int __mBiasRaw[3] = {0,0,0};
+Vector3i __mBiasRawVector;
 unsigned char __settings_mag_scale;
 
 const int IMU_SCL = 0;
@@ -22,22 +24,22 @@ void imuInitialize() {
 }
   
 //Unit: g's
-Vector3 imuAccelerometerRead() {
-  Vector3 acceleration;
+Vector3f imuAccelerometerRead() {
+  Vector3f acceleration;
   imu_readAccelCalculated(&(acceleration.x), &(acceleration.y), &(acceleration.z));
   return acceleration;
 }  
 
 //Unit: Degrees of rotation per second
-Vector3 imuGyroscopeRead() {
-  Vector3 gyroscope;
+Vector3f imuGyroscopeRead() {
+  Vector3f gyroscope;
   imu_readGyroCalculated(&(gyroscope.x), &(gyroscope.y), &(gyroscope.z));
   return gyroscope;
 }  
 
 //Unit: Gauss
-Vector3 imuMagnetometerRead() {
-  Vector3 magnet;
+Vector3f imuMagnetometerRead() {
+  Vector3f magnet;
   imu_readMagCalculated(&(magnet.x), &(magnet.y), &(magnet.z));
   return magnet;
 } 
@@ -50,70 +52,62 @@ float imuTemperatureRead() {
 } 
 
 void imuCalibrateMagnetometer() {
-  // TODO: Figure out the purposes behind these variables and checks
-    // Then rewrite this function
-  int i = 0, j, mx, my, mz;
-  char ck0 = 0, ck1 = 0, ck2 = 0, ck3 = 0, ck4 = 0, ck5 = 0, ck6 = 0, ck7 = 0, ck8 = 0;
-  int magMin[3] = {0, 0, 0};
-  int magMax[3] = {0, 0, 0};
-  
-  float ax, ay, az;
+  int iterations = 0;
+  Vector3i magReading;
+  char accelCheck = 0;
+  char magRangeCheck = 0;
+  Vector3i magReadMin = {0, 0, 0}, magReadMax = {0, 0, 0};
+  Vector3f accel;
     
-  while(i < 128 || (ck0 + ck1 + ck2 + ck3 + ck4 + ck5 + ck6 + ck7 + ck8) < 6) // 
-  {
-    while (!imu_magAvailable(ALL_AXIS)); // nothing exocuted within while loop
+  while(iterations < 128 || (magRangeCheck != 1 && accelCheck != 1)) {
+    while (!imu_magAvailable(ALL_AXIS)); // blank loop; grind until available
 
-    imu_readMag(&mx, &my, &mz); // reading mag
-    int magTemp[3] = {0, 0, 0}; // temp holder of mag
+    imu_readMag(&(magReading.x), &(magReading.y), &(magReading.z));
 
-    magTemp[0] = mx;    
-    magTemp[1] = my;
-    magTemp[2] = mz;
+    magReadMax = maxEachDimension(magReadMax, magReading);
+    magReadMin = minEachDimension(magReadMin, magReading);    
 
-    for (j = 0; j < 3; j++) // max min tracking
-    {
-      if (magTemp[j] > magMax[j]) magMax[j] = magTemp[j];
-      if (magTemp[j] < magMin[j]) magMin[j] = magTemp[j];
-    } // end of max min tracking
+    int minMagDiff = 12000 / ((int) __settings_mag_scale);
+    Vector3i magDiff = {
+      abs(magReadMax.x - magReadMin.x),
+      abs(magReadMax.y - magReadMin.y),
+      abs(magReadMax.z - magReadMin.z)
+    };
+    if (magDiff.x > minMagDiff && magDiff.y > minMagDiff && magDiff.z > minMagDiff) {
+      magRangeCheck = 1;
+    }
+
+    imu_readAccelCalculated(&(accel.x), &(accel.y), &(accel.z));
+    if (vector3fMagnitude(accel) > 0.85) {
+      accelCheck = 1;
+    }
     
-
-    // expected to be true?
-    if(abs(magMax[0] - magMin[0]) > (12000 / ((int) __settings_mag_scale))) ck6 = 1;
-    if(abs(magMax[1] - magMin[1]) > (12000 / ((int) __settings_mag_scale))) ck7 = 1;
-    if(abs(magMax[2] - magMin[2]) > (12000 / ((int) __settings_mag_scale))) ck8 = 1;
-    //
-
-    imu_readAccelCalculated(&ax, &ay, &az); // actual calibration
-     // G-force 
-    // I wonder if this is to verify that magnitude(accel) ~ 1?
-    if(ax > 0.85 && ay < 0.15 && ay > -0.15 && az < 0.15 && az > -0.15) ck0 = 1;
-    if(ax < -0.85 && ay < 0.15 && ay > -0.15 && az < 0.15 && az > -0.15) ck1 = 1;
-    if(ay > 0.85 && ax < 0.15 && ax > -0.15 && az < 0.15 && az > -0.15) ck2 = 1;
-    if(ay < -0.85 && ax < 0.15 && ax > -0.15 && az < 0.15 && az > -0.15) ck3 = 1;
-    if(az > 0.85 && ay < 0.15 && ay > -0.15 && ax < 0.15 && ax > -0.15) ck4 = 1;
-    if(az < -0.85 && ay < 0.15 && ay > -0.15 && ax < 0.15 && ax > -0.15) ck5 = 1;
-    
-    i++;
-    
-    if (i > 10000) {
-      //has looped for at least 100 seconds
+    iterations++;
+    if (iterations > 10000) { //has looped for at least 100 seconds
       break;
     }      
     pause(10);
   }
 
-  // 
-  for (j = 0; j < 3; j++)
-  {
-    __mBiasRaw[j] = (magMax[j] + magMin[j]) / 2;
-  }
+  __mBiasRawVector = {
+    (magReadMax.x + magReadMin.x) / 2,
+    (magReadMax.y + magReadMin.y) / 2,
+    (magReadMax.z + magReadMin.z) / 2
+  };
+
+  unsigned char msB, lsB;
+  msB = (__mBiasRawVector.x & 0xFF00) >> 8;
+  lsB = (__mBiasRawVector.x & 0x00FF);
+  imu_SPIwriteByte(__pinM, OFFSET_X_REG_L_M + 0, lsB);
+  imu_SPIwriteByte(__pinM, OFFSET_X_REG_H_M + 0, msB);
   
-  unsigned char msb, lsb;
-  for(int k = 0; k < 3; k++)
-  {
-    msb = (__mBiasRaw[k] & 0xFF00) >> 8;
-    lsb = __mBiasRaw[k] & 0x00FF;
-    imu_SPIwriteByte(__pinM, OFFSET_X_REG_L_M + (2 * k), lsb);
-    imu_SPIwriteByte(__pinM, OFFSET_X_REG_H_M + (2 * k), msb);
-  }
+  msB = (__mBiasRawVector.y & 0xFF00) >> 8;
+  lsB = (__mBiasRawVector.y & 0x00FF);
+  imu_SPIwriteByte(__pinM, OFFSET_X_REG_L_M + 2, lsB);
+  imu_SPIwriteByte(__pinM, OFFSET_X_REG_H_M + 2, msB);
+  
+  msB = (__mBiasRawVector.z & 0xFF00) >> 8;
+  lsB = (__mBiasRawVector.z & 0x00FF);
+  imu_SPIwriteByte(__pinM, OFFSET_X_REG_L_M + 4, lsB);
+  imu_SPIwriteByte(__pinM, OFFSET_X_REG_H_M + 4, msB);
 }

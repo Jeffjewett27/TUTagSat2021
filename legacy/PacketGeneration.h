@@ -17,29 +17,29 @@ uint16_t compressIMUTemp(float temp);
 
 Packet generateGeneralSensorPacket(uint8_t iteration, uint8_t packetsCounter, int i, SensorReadings *sensors);
               
-Packet generateMagX(Vector3 *magReads, uint8_t iteration, uint8_t packetsCounter);
-Packet generateMagY(Vector3 *magReads, uint8_t iteration, uint8_t packetsCounter);
-Packet generateMagZ(Vector3 *magReads, uint8_t iteration, uint8_t packetsCounter);
+Packet generateMagX(Vector3f *magReads, uint8_t iteration, uint8_t packetsCounter);
+Packet generateMagY(Vector3f *magReads, uint8_t iteration, uint8_t packetsCounter);
+Packet generateMagZ(Vector3f *magReads, uint8_t iteration, uint8_t packetsCounter);
 
-Packet generateMagXCompressed(Vector3 *magReads, uint8_t iteration, uint8_t packetsCounter);
-Packet generateMagYCompressed(Vector3 *magReads, uint8_t iteration, uint8_t packetsCounter);
-Packet generateMagZCompressed(Vector3 *magReads, uint8_t iteration, uint8_t packetsCounter);
+Packet generateMagXCompressed(Vector3f *magReads, uint8_t iteration, uint8_t packetsCounter);
+Packet generateMagYCompressed(Vector3f *magReads, uint8_t iteration, uint8_t packetsCounter);
+Packet generateMagZCompressed(Vector3f *magReads, uint8_t iteration, uint8_t packetsCounter);
 
-Packet generateGyroX(Vector3 *gyroReads, uint8_t iteration, uint8_t packetsCounter);
-Packet generateGyroY(Vector3 *gyroReads, uint8_t iteration, uint8_t packetsCounter);
-Packet generateGyroZ(Vector3 *gyroReads, uint8_t iteration, uint8_t packetsCounter);
+Packet generateGyroX(Vector3f *gyroReads, uint8_t iteration, uint8_t packetsCounter);
+Packet generateGyroY(Vector3f *gyroReads, uint8_t iteration, uint8_t packetsCounter);
+Packet generateGyroZ(Vector3f *gyroReads, uint8_t iteration, uint8_t packetsCounter);
 
-Packet generateGyroXCompressed(Vector3 *gyroReads, uint8_t iteration, uint8_t packetsCounter);
-Packet generateGyroYCompressed(Vector3 *gyroReads, uint8_t iteration, uint8_t packetsCounter);
-Packet generateGyroZCompressed(Vector3 *gyroReads, uint8_t iteration, uint8_t packetsCounter);
+Packet generateGyroXCompressed(Vector3f *gyroReads, uint8_t iteration, uint8_t packetsCounter);
+Packet generateGyroYCompressed(Vector3f *gyroReads, uint8_t iteration, uint8_t packetsCounter);
+Packet generateGyroZCompressed(Vector3f *gyroReads, uint8_t iteration, uint8_t packetsCounter);
 
-Packet generateAccX(Vector3 *accReads, uint8_t iteration, uint8_t packetsCounter);
-Packet generateAccY(Vector3 *accReads, uint8_t iteration, uint8_t packetsCounter);
-Packet generateAccZ(Vector3 *accReads, uint8_t iteration, uint8_t packetsCounter);
+Packet generateAccX(Vector3f *accReads, uint8_t iteration, uint8_t packetsCounter);
+Packet generateAccY(Vector3f *accReads, uint8_t iteration, uint8_t packetsCounter);
+Packet generateAccZ(Vector3f *accReads, uint8_t iteration, uint8_t packetsCounter);
 
-Packet generateAccXCompressed(Vector3 *accReads, uint8_t iteration, uint8_t packetsCounter);
-Packet generateAccYCompressed(Vector3 *accReads, uint8_t iteration, uint8_t packetsCounter);
-Packet generateAccZCompressed(Vector3 *accReads, uint8_t iteration, uint8_t packetsCounter);
+Packet generateAccXCompressed(Vector3f *accReads, uint8_t iteration, uint8_t packetsCounter);
+Packet generateAccYCompressed(Vector3f *accReads, uint8_t iteration, uint8_t packetsCounter);
+Packet generateAccZCompressed(Vector3f *accReads, uint8_t iteration, uint8_t packetsCounter);
 
 Packet generateUV1(uint16_t *uv1Reads, uint8_t iteration, uint8_t packetsCounter);
 

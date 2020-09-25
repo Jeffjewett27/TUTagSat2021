@@ -10,9 +10,9 @@
 
 void imuInitialize(); 
 
-Vector3 imuAccelerometerRead();
-Vector3 imuMagnetometerRead();
-Vector3 imuGyroscopeRead();
+Vector3f imuAccelerometerRead();
+Vector3f imuMagnetometerRead();
+Vector3f imuGyroscopeRead();
 float imuTemperatureRead();
 
 void imuCalibrateMagnetometer();
