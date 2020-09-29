@@ -1,17 +1,8 @@
 TUSatellite7.c
-DataConversion.c
-DataConversion.h
 EEPROM.c
 EEPROM.h
-IMUSensor.c
-IMUSensor.h
-Packet.h
-PacketQueue.c
-PacketQueue.h
-SensorReadings.h
-SerialOutput.c
-SerialOutput.h
-Vector3.h
+BitFlip.c
+BitFlip.h
 >compiler=C
 >memtype=cmm main ram compact
 >optimize=-Os
