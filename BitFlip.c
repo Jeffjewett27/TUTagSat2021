@@ -30,3 +30,11 @@ void setEepromBytes(uint16_t address, uint8_t *data, int numBytes) {
   while(i2c_busy(bfBus, BITFLIP_CONTROL));
   i2c_out(bfBus, BITFLIP_CONTROL, address, sizeof(uint16_t), data, numBytes); //output the value of pc to EEPROM
 }
+
+int hasBitFlip(uint16_t address, uint8_t *expectedData, int numBytes) {  
+  uint8_t data;
+  readEepromBytes(address, &data, numBytes);
+  
+  if (data != *expectedData) return data;
+  return 0;
+}  
