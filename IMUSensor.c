@@ -64,8 +64,8 @@ void imuCalibrateMagnetometer() {
 
     imu_readMag(&(magReading.x), &(magReading.y), &(magReading.z));
 
-    magReadMax = maxEachDimension(magReadMax, magReading);
-    magReadMin = minEachDimension(magReadMin, magReading);    
+    magReadMax = maxEachDimensionI(magReadMax, magReading);
+    magReadMin = minEachDimensionI(magReadMin, magReading);    
 
     int minMagDiff = 12000 / ((int) __settings_mag_scale);
     Vector3i magDiff = {
@@ -89,11 +89,9 @@ void imuCalibrateMagnetometer() {
     pause(10);
   }
 
-  __mBiasRawVector = {
-    (magReadMax.x + magReadMin.x) / 2,
-    (magReadMax.y + magReadMin.y) / 2,
-    (magReadMax.z + magReadMin.z) / 2
-  };
+  __mBiasRawVector.x = (magReadMax.x + magReadMin.x) / 2;
+  __mBiasRawVector.y = (magReadMax.y + magReadMin.y) / 2;
+  __mBiasRawVector.z = (magReadMax.z + magReadMin.z) / 2;
 
   unsigned char msB, lsB;
   msB = (__mBiasRawVector.x & 0xFF00) >> 8;
