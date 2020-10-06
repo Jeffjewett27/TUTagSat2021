@@ -18,6 +18,7 @@ const int SERIAL_TX = 18;
 
 fdserial *sr;
 PacketQueue *packetQueue;
+PacketQueue *priorityQueue;
 int *thread;
 
 //initializes pins
@@ -26,8 +27,9 @@ void initSerial() {
 }  
 
 //starts the serial output thread
-void serialOutputThread(PacketQueue *pQueue) {
-  packetQueue = pQueue;
+void serialOutputThread(PacketQueue *mainQueue, PacketQueue *priorQueue) {
+  packetQueue = mainQueue;
+  priorityQueue = priorQueue;
   initSerial();
   thread = cog_run(serialOutputLoop, 128);
 }  
@@ -38,15 +40,21 @@ void serialOutputLoop() {
     while(isSerialBusy()) {
       pause(100);
     }    
-    if (isQueueEmpty(packetQueue)) {
+    //dequeue from priority queue first
+    PacketQueue *usedQueue;
+    if (!isQueueEmpty(priorityQueue)) {
+      usedQueue = priorityQueue;
+    } else if (!isQueueEmpty(packetQueue)) {
+      usedQueue = packetQueue;
+    } else {
       continue;
     }    
-    Packet packet = peekQueue(packetQueue);
+    Packet packet = peekQueue(usedQueue);
     outputPacket((char*)&packet);
     if (isSerialACK()) {
       uint8_t packetCount = packet.packetsCounter;
-      setPacketCount(packetCount);
-      dequeue(packetQueue);
+      //setPacketCount(packetCount);
+      dequeue(usedQueue);
     }
   }  
 }  

@@ -1,16 +1,29 @@
 TUSatellite7.c
+BitFlip.c
+BitFlip.h
+DataCollection.c
+DataCollection.h
 DataConversion.c
 DataConversion.h
+DataPacketing.c
+DataPacketing.h
 EEPROM.c
 EEPROM.h
+EEPROMData.c
+EEPROMData.h
 IMUSensor.c
 IMUSensor.h
+Packet.c
 Packet.h
 PacketQueue.c
 PacketQueue.h
-SensorReadings.h
+PulseCount.c
+PulseCount.h
 SerialOutput.c
 SerialOutput.h
+UVSensor.c
+UVSensor.h
+Vector3.c
 Vector3.h
 >compiler=C
 >memtype=cmm main ram compact
@@ -19,4 +32,4 @@ Vector3.h
 >-fno-exceptions
 >defs::-std=c99
 >-lm
->BOARD::ACTIVITYBOARD
+>BOARD::GENERIC

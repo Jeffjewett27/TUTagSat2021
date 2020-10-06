@@ -9,7 +9,7 @@
 #include "PacketQueue.h"
 
 //starts the serial output thread
-void serialOutputThread(PacketQueue *pQueue);
+void serialOutputThread(PacketQueue *mainQueue, PacketQueue *priorityQueue);
 
 //forever waits for busy to drop then sends first element of queue
 void serialOutputLoop();

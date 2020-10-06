@@ -16,7 +16,7 @@ Mitchell Toth
 Purpose:
 To test and integrate different sensors in low-earth orbit. On this mission, our focus was on taking, analyzing, and transmitting 
 useful low-resolution infrared images with the GridEye sensor, plus attempting to detect any bit flips on our EEPROM, and correlate
-such bit flips with uv/gamma ray levels. We are building on our previous code for Satellite 6 (https://github.com/Jeffjewett27/SatelliteTU2020)
+such bit flips with uv/gamma ray levels. We are building on our previous code for TU Satellite 6 (https://github.com/Jeffjewett27/SatelliteTU2020)
 
 
 
@@ -54,12 +54,8 @@ Temperature (analog)
 -10 mV/°C scale factor (determine constant offset?)
 Radiation (pulse count)
 -5 cpm/µSv/h
-Phototransistor
--In scope?
 Light to Frequency (pulse count)
 -TODO: locate datasheet
-RGB color detector
--Which model?
 
 Utilities:
 -.linux-side.sh is a bash script to update the project file (TUSatellite7.side)
@@ -70,3 +66,25 @@ Utilities:
 -Packet.h contains header info + 32 bytes of data for a packet
 -PacketQueue.h is a queue data structure which holds packets
 -DataConversion.h contains functions to switch between 32-bit and 16-bit floats (at cost of precision)
+
+Packet List:
+GeneralSensor: DESCOPED
+IMU:
+-mag [4x8]
+-acc [4x8]
+-gyro [4x8]
+-magCompressed (xyz) [2x16]
+-accCompressed (xyz) [2x16]
+-gyroCompressed (xyz) [2x16]
+GridEye:
+-image (3 segments, abc) -> priority queue
+BitFlip:
+-detected -> priority queue
+Analog:
+-uva [4x8]
+-uvc [4x8]
+-temp1 [4x8]
+-temp2 [4x8]
+-temp3 [4x8]
+PulseCount:
+-15 ltf, 1 radiation [ltf1,ltf1,ltf2,ltf2,...,ltf15,ltf15, rad1, 0x0]
