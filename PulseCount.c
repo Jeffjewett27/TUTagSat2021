@@ -4,13 +4,18 @@
 const int LTF_PIN = 11;  //Light to frequency
 const int RAD_PIN = 16;  //Radiation (particle detector)
 
-volatile uint32_t ltfCount = 0;  //Count of pulses
+const uint8_t LTF_FN = 0x01;
+const uint8_t RAD_FN = 0x02;
+
+volatile uint16_t ltfCount = 0;  //Count of pulses
 volatile int ltfOverflow = 0;    //Count of overflow occurrences
 volatile int ltfReset = 0;       //Flag to mark a pulse count as needing reset
+uint16_t ltfPulseCounts[16];     //Array of 1 minute's worth of pulse counts
 
-volatile uint32_t radCount = 0;  
+volatile uint8_t radCount = 0; 
 volatile int radOverflow = 0; 
 volatile int radReset = 0; 
+uint8_t radPulseCounts[32];
 
 int *pcCog;
 
@@ -73,22 +78,55 @@ void pulseCountThread() {
   }    
 }  
 
-uint32_t lightToFrequency_read_reset() {
-  uint32_t val = ltfCount;
+uint16_t lightToFrequency_read_reset() {
+  uint16_t val = ltfCount;
   if (ltfOverflow) {
-    //If there was an overflow, return max value instead of some lower amount
+    //If there was an overflow, return max value
     val = ~0; //Max value for unsigned int
   }
   ltfReset = 1; //Let the other thread take care of resetting to avoid race condition
   return val;
 }  
 
-uint32_t radiation_read_reset() {
-  uint32_t val = radCount;
+uint8_t radiation_read_reset() {
+  uint8_t val = radCount;
   if (radOverflow) {
-    //If there was an overflow, return max value instead of some lower amount
-    val = ~0; //Max value for unsigned int
+    val = ~0;
   }
-  radReset = 1; //Let the other thread take care of resetting to avoid race condition
+  radReset = 1;
   return val;
 }  
+
+void lightToFrequency_read(int i) {
+  uint16_t val = lightToFrequency_read_reset();
+  ltfPulseCounts[i] = val;
+  printf("LTF -- val: %d, i: %d\n", val, i);
+}  
+
+void radiation_read(int i) {
+  uint8_t val = radiation_read_reset();
+  radPulseCounts[i] = val;
+  printf("RAD -- val: %d, i: %d\n", val, i);
+} 
+
+Packet getLightToFrequencyPacket(uint8_t iter, uint8_t pc) {
+  Packet p;
+  setPacketHeader(&p, LTF_FN, iter, pc);
+  for (int i=0; i<16; i++) {
+    printf("%d, ", ltfPulseCounts[i]);
+    p.ArrayType.twoByte[i] = ltfPulseCounts[i];
+  } 
+  print("\n\n");   
+  return p;
+} 
+
+Packet getRadiationPacket(uint8_t iter, uint8_t pc) {
+  Packet p;
+  setPacketHeader(&p, RAD_FN, iter, pc);
+  for (int i=0; i<32; i++) {
+    printf("%d, ", radPulseCounts[i]);
+    p.ArrayType.oneByte[i] = radPulseCounts[i];
+  }    
+  print("\n\n"); 
+  return p;
+} 
