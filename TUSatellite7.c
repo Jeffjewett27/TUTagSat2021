@@ -3,6 +3,7 @@
 #include "DataPacketing.h"
 #include "PacketQueue.h"
 #include "SerialOutput.h"
+#include "IMUSensor.h"
 
 void initializeSensors();
 void initializeDataCollection();
@@ -35,6 +36,7 @@ int main() {
 
 void initializeSensors() {
   //call sensor initialization functions
+  imuInitialize();
 }  
 
 void initializeDataCollection() {
@@ -44,6 +46,7 @@ void initializeDataCollection() {
   //subscribeEveryTwoSecAfter(&printTwoAfter);
   //subscribeEveryFourSec(&printFour);
   //subscribeEveryFourSecAfter(&printFourAfter2); 
+  subscribeEveryEightSec(&imuReadEveryEightSec);
 }
 
 void initializeDataPacketing() {
@@ -51,6 +54,15 @@ void initializeDataPacketing() {
   //subscribeEachIteration(&test2);
   //subscribeOddIteration(&testOdd1);
   //subscribeEvenIteration(&testEven1);
+  subscribeEachIteration(&getAccelXPacket);
+  subscribeEachIteration(&getAccelYPacket);
+  subscribeEachIteration(&getAccelZPacket);
+  subscribeEachIteration(&getGyroXPacket);
+  subscribeEachIteration(&getGyroYPacket);
+  subscribeEachIteration(&getGyroZPacket);
+  subscribeEachIteration(&getMagXPacket);
+  subscribeEachIteration(&getMagYPacket);
+  subscribeEachIteration(&getMagZPacket);
 }  
 
 void initializeQueues(PacketQueue *mainQueue, PacketQueue *priorityQueue) {

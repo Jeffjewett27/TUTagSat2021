@@ -1,6 +1,6 @@
 /*
  * Author: Isaac Wickham and Jeff Jewett
- * Modification Date: 9/24/20
+ * Modification Date: 10/6/20
 */
 
 #include "lsm9ds1.h"
@@ -9,49 +9,66 @@
 #include <math.h>
 
 int __pinM;
-int __mBiasRaw[3] = {0,0,0};
 Vector3i __mBiasRawVector;
 unsigned char __settings_mag_scale;
 
-const int IMU_SCL = 0;
-const int IMU_SDIO = 1;
-const int IMU_CS_AG = 2;
-const int IMU_CS_M = 3;
+const int IMU_SCL = 0, IMU_SDIO = 1, IMU_CS_AG = 2, IMU_CS_M = 3;
+
+enum imuDataSheetConsts {
+  ACCEL_X_ROW = 0, ACCEL_Y_ROW = 1, ACCEL_Z_ROW = 2,
+  GYRO_X_ROW = 3 , GYRO_Y_ROW = 4 , GYRO_Z_ROW = 5,
+  MAGNE_X_ROW = 6, MAGNE_Y_ROW = 7, MAGNE_Z_ROW = 8,
+  IMU_NUM_ROWS = 9, IMU_NUM_COLS = 8
+};
+float imuSensorDataSheet[IMU_NUM_ROWS][IMU_NUM_COLS];
+
+void imuReadEveryEightSec(int index) {
+  Vector3f accelReading = imuAccelerometerRead();
+  imuSensorDataSheet[ACCEL_X_ROW][index] = accelReading.x;
+  imuSensorDataSheet[ACCEL_Y_ROW][index] = accelReading.y;
+  imuSensorDataSheet[ACCEL_Z_ROW][index] = accelReading.z;
+  
+  Vector3f gyroReading = imuGyroscopeRead();
+  imuSensorDataSheet[GYRO_X_ROW][index] = gyroReading.x;
+  imuSensorDataSheet[GYRO_Y_ROW][index] = gyroReading.y;
+  imuSensorDataSheet[GYRO_Z_ROW][index] = gyroReading.z;
+
+  Vector3f magnetReading = imuMagnetometerRead();
+  imuSensorDataSheet[MAGNE_X_ROW][index] = magnetReading.x;
+  imuSensorDataSheet[MAGNE_Y_ROW][index] = magnetReading.y;
+  imuSensorDataSheet[MAGNE_Z_ROW][index] = magnetReading.z;
+}
 
 void imuInitialize() {
   // Success: 0x683D, Failure: 0
   imu_init(IMU_SCL, IMU_SDIO, IMU_CS_AG, IMU_CS_M);
 }
-  
-//Unit: g's
+
 Vector3f imuAccelerometerRead() {
-  Vector3f acceleration;
+  Vector3f acceleration; //G-s
   imu_readAccelCalculated(&(acceleration.x), &(acceleration.y), &(acceleration.z));
   return acceleration;
 }  
 
-//Unit: Degrees of rotation per second
 Vector3f imuGyroscopeRead() {
-  Vector3f gyroscope;
+  Vector3f gyroscope; //Degrees of rotation per second
   imu_readGyroCalculated(&(gyroscope.x), &(gyroscope.y), &(gyroscope.z));
   return gyroscope;
 }  
 
-//Unit: Gauss
 Vector3f imuMagnetometerRead() {
-  Vector3f magnet;
+  Vector3f magnet; //Gausses
   imu_readMagCalculated(&(magnet.x), &(magnet.y), &(magnet.z));
   return magnet;
 } 
 
-//Unit: Degrees Celsius
 float imuTemperatureRead() {
-  float temperature;
+  float temperature; //Degrees Celsius
   imu_readTempCalculated(&temperature, CELSIUS);
   return temperature;
 } 
 
-void imuCalibrateMagnetometer() {
+void imuCalibrateMagnetometerAndAccelerometer() {
   int iterations = 0;
   Vector3i magReading;
   char accelCheck = 0;
@@ -108,4 +125,44 @@ void imuCalibrateMagnetometer() {
   lsB = (__mBiasRawVector.z & 0x00FF);
   imu_SPIwriteByte(__pinM, OFFSET_X_REG_L_M + 4, lsB);
   imu_SPIwriteByte(__pinM, OFFSET_X_REG_H_M + 4, msB);
+}
+
+//------Networking------
+Packet getDataSheetPacket(uint8_t iter, uint8_t pc, int dataSheetRow) {
+  Packet desiredPacket;
+  desiredPacket.iteration = iter;
+  desiredPacket.packetsCounter = pc;
+  for (int index = 0; index < IMU_NUM_COLS; index++) {
+    desiredPacket.ArrayType.fourByte[index] = imuSensorDataSheet[dataSheetRow][index];
+  }
+
+  return desiredPacket;
+}
+
+Packet getAccelXPacket(uint8_t iter, uint8_t pc) {
+  return getDataSheetPacket(iter, pc, ACCEL_X_ROW);
+}
+Packet getAccelYPacket(uint8_t iter, uint8_t pc) {
+  return getDataSheetPacket(iter, pc, ACCEL_Y_ROW);
+}
+Packet getAccelZPacket(uint8_t iter, uint8_t pc) {
+  return getDataSheetPacket(iter, pc, ACCEL_Z_ROW);
+}
+Packet getGyroXPacket(uint8_t iter, uint8_t pc) {
+  return getDataSheetPacket(iter, pc, GYRO_X_ROW);
+}
+Packet getGyroYPacket(uint8_t iter, uint8_t pc) {
+  return getDataSheetPacket(iter, pc, GYRO_Y_ROW);
+}
+Packet getGyroZPacket(uint8_t iter, uint8_t pc) {
+  return getDataSheetPacket(iter, pc, GYRO_Z_ROW);
+}
+Packet getMagXPacket(uint8_t iter, uint8_t pc) {
+  return getDataSheetPacket(iter, pc, MAGNE_X_ROW);
+}
+Packet getMagYPacket(uint8_t iter, uint8_t pc) {
+  return getDataSheetPacket(iter, pc, MAGNE_Y_ROW);
+}
+Packet getMagZPacket(uint8_t iter, uint8_t pc) {
+  return getDataSheetPacket(iter, pc, MAGNE_Z_ROW);
 }
