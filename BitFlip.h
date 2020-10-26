@@ -1,5 +1,5 @@
-void bitFlip_initI2C();
+#include "simpletools.h"
+#include "PacketQueue.h"
 
-void readEepromBytes(uint16_t address, uint8_t *data, int numBytes);
-
-void setEepromBytes(uint16_t address, uint8_t *data, int numBytes);
+void prepareBitFlipArray(uint8_t *zeroes);
+void checkBitFlips(uint8_t *zeroes, PacketQueue *queue);

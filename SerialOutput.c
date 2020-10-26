@@ -6,15 +6,12 @@
 #include "simpletools.h"
 #include "fdserial.h"
 #include "SerialOutput.h"
-#include "EEPROMData.h"
 
-const int BYTES_PER_PACKET = 35;
+#define BUSY_PIN 24
+#define SERIAL_RX 25
+#define SERIAL_TX 26
+
 const char ACK[] = {0xAA, 0x05, 0x00};
-const int NAK = 0xAA05FF;
-const int BUSY_PIN = 16;
-
-const int SERIAL_RX = 17;
-const int SERIAL_TX = 18;
 
 fdserial *sr;
 PacketQueue *packetQueue;
@@ -39,7 +36,7 @@ void serialOutputLoop() {
   while(1) {
     while(isSerialBusy()) {
       pause(100);
-    }    
+    }
     //dequeue from priority queue first
     PacketQueue *usedQueue;
     if (!isQueueEmpty(priorityQueue)) {
@@ -48,19 +45,19 @@ void serialOutputLoop() {
       usedQueue = packetQueue;
     } else {
       continue;
-    }    
-    Packet packet = peekQueue(usedQueue);
-    outputPacket((char*)&packet);
-    if (isSerialACK()) {
-      uint8_t packetCount = packet.packetsCounter;
-      //setPacketCount(packetCount);
-      dequeue(usedQueue);
     }
+    Packet packet = peekQueue(usedQueue);
+    int attempt = 0;
+    do {
+        outputPacket(&packet);
+    } while (!isSerialACK() && attempt++ < 2);
+    dequeue(usedQueue);
+    pause(1000);
   }  
 }  
 
 //outputs a packet
-void outputPacket(char* packet) {
+void outputPacket(Packet *packet) {
   fdserial_rxFlush(sr);
   fdserial_txFlush(sr);
 
@@ -69,9 +66,13 @@ void outputPacket(char* packet) {
   fdserial_txChar(sr, 0x50);
   fdserial_txChar(sr, 0x50);
 
-  for(int i=0; i<BYTES_PER_PACKET; i++) {
-    fdserial_txChar(sr, packet[i]);
-  }
+  fdserial_txChar(sr, packet->fnCode);
+  fdserial_txChar(sr, packet->iteration);
+  fdserial_txChar(sr, packet->packetsCounter);
+  
+  for(int i=0; i<32; i++) {
+    fdserial_txChar(sr, packet->ArrayType.oneByte[i]);
+  }  
 }
 
 //determines if signal is ACK
@@ -102,4 +103,4 @@ int isSerialACK() {
 //checks the busy pin
 int isSerialBusy() {
   return input(BUSY_PIN);
-}  
+}

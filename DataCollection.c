@@ -4,7 +4,7 @@
 #define NUM_DATA_INITIALIZERS 2
 #define NUM_DATA_CLEANUPS 2
 #define NUM_DATA_TWO_SEC 4
-#define NUM_DATA_FOUR_SEC 4
+#define NUM_DATA_FOUR_SEC 8
 #define NUM_DATA_EIGHT_SEC 4
 
 void(*dataInitializers[NUM_DATA_INITIALIZERS])();
@@ -44,7 +44,6 @@ void minuteLoop() {
 
 void subscribeInitialize(void(*func)()) {
   if (dataInitCounter >= NUM_DATA_INITIALIZERS) {
-    print("error, initializer overflow\n");
     return;
   }    
   dataInitializers[dataInitCounter] = func;
@@ -53,7 +52,6 @@ void subscribeInitialize(void(*func)()) {
 
 void subscribeCleanup(void(*func)()) {
   if (dataCleanCounter >= NUM_DATA_CLEANUPS) {
-    print("error, initializer overflow\n");
     return;
   }    
   dataCleanups[dataCleanCounter] = func;
@@ -62,7 +60,6 @@ void subscribeCleanup(void(*func)()) {
 
 void subscribeEveryTwoSec(void(*func)(int i)) {
   if (dataTwoSecCounter >= NUM_DATA_TWO_SEC) {
-    print("error, two sec overflow\n");
     return;
   }    
   dataTwoSec[dataTwoSecCounter] = func;
@@ -71,7 +68,6 @@ void subscribeEveryTwoSec(void(*func)(int i)) {
  
 void subscribeEveryFourSec(void(*func)(int i)) {
   if (dataFourSecCounter >= NUM_DATA_FOUR_SEC) {
-    print("error, four sec overflow\n");
     return;
   }    
   dataFourSec[dataFourSecCounter] = func;
@@ -80,7 +76,6 @@ void subscribeEveryFourSec(void(*func)(int i)) {
 
 void subscribeEveryEightSec(void(*func)(int i)) {
   if (dataEightSecCounter >= NUM_DATA_EIGHT_SEC) {
-    print("error, eight sec overflow\n");
     return;
   }    
   dataEightSec[dataEightSecCounter] = func;

@@ -14,23 +14,33 @@ const int EEPROM_SDA = 29;
 i2c *eeBus;  // I2C bus ID
 
 void eepromInitI2C() {
-  //28 and 29 are i2c pin numbers and 0 is an i2c mode
   eeBus = i2c_newbus(EEPROM_SCL,  EEPROM_SDA,   0); 
 }  
 
 void eepromWriteArray(uint16_t address, uint8_t *data, int numBytes) {
+  if (eeBus == NULL) {
+    eepromInitI2C();
+  }    
+
+  while(i2c_busy(eeBus, EEPROM_I2C_ADDRESS));
+  i2c_out(eeBus, EEPROM_I2C_ADDRESS, address, sizeof(uint16_t), data, numBytes);
 }  
 
 void eepromWriteUint8(uint16_t address, uint8_t data) {
-  
+  eepromWriteArray(address, &data, 1);
 }
 
 void eepromReadArray(uint16_t address, uint8_t *buffer, int numBytes) {
-  
+  if (eeBus == NULL) {
+    eepromInitI2C();
+  }    
+
+  while(i2c_busy(eeBus, EEPROM_I2C_ADDRESS));
+  i2c_in(eeBus, EEPROM_I2C_ADDRESS, address, sizeof(uint16_t), buffer, numBytes);
 }  
 
 uint8_t eepromReadUint8(uint16_t address) {
-  return 0;
-}  
-
-//TODO implement EEPROM.h interface
+  uint8_t val;
+  eepromReadArray(address, &val, 1);
+  return val;
+}

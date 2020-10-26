@@ -31,7 +31,7 @@ Packet peekQueue(PacketQueue *q){
   return(q->front->value);
 }
 
-void enqueue(PacketQueue *q, Packet val){
+void enqueue(PacketQueue *q, Packet val){  
   PacketNode *finger;
   finger = malloc(sizeof(PacketNode));
   finger->value = val;

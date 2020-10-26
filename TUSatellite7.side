@@ -1,6 +1,4 @@
 TUSatellite7.c
-BitFlip.c
-BitFlip.h
 DataCollection.c
 DataCollection.h
 DataConversion.c
@@ -9,8 +7,8 @@ DataPacketing.c
 DataPacketing.h
 EEPROM.c
 EEPROM.h
-EEPROMData.c
-EEPROMData.h
+GridEyeSensor.c
+GridEyeSensor.h
 IMUSensor.c
 IMUSensor.h
 Packet.c
@@ -25,6 +23,12 @@ UVSensor.c
 UVSensor.h
 Vector3.c
 Vector3.h
+TemperatureSensor.c
+TemperatureSensor.h
+ADC.h
+ADC.c
+BitFlip.c
+BitFlip.h
 >compiler=C
 >memtype=cmm main ram compact
 >optimize=-Os

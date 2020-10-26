@@ -1,7 +1,6 @@
--EEPROM Functions
--Bit flip (initialize thread, push to priorityQueue)
--GridEye (initialize thread, push to priorityQueue)
--UV sensors (sub2collection, sub2packeting)
--temp sensors (sub2collection, sub2packeting)
--IMU (initialize, sub2collection, sub2packeting)
--pulse counts (initialize thread, sub2collection, sub2packeting)
+-compile fnCodes
+-remove print statements
+
+
+To test:
+-serial output

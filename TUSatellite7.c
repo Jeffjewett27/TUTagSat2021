@@ -1,68 +1,101 @@
 #include "simpletools.h"
 #include "DataCollection.h"
 #include "DataPacketing.h"
-#include "PacketQueue.h"
-#include "SerialOutput.h"
+#include "EEPROM.h"
+#include "GridEyeSensor.h"
 #include "IMUSensor.h"
+#include "PacketQueue.h"
+#include "PulseCount.h"
+#include "SerialOutput.h"
+#include "TemperatureSensor.h"
+#include "UVSensor.h"
+#include "Vector3.h"
 
-void initializeSensors();
+uint8_t iteration = 0;
+uint8_t packetCount = 0;
+PacketQueue *mainQueue;
+PacketQueue *priorityQueue;
+
+void initializeSensors(PacketQueue *mainQueue, PacketQueue *priorityQueue);
 void initializeDataCollection();
 void initializeDataPacketing();
 void initializeQueues(PacketQueue *mainQueue, PacketQueue *priorityQueue);
 
-int main() {  
-  uint8_t iteration = 0;
-  uint8_t packetCount = 0;
-  PacketQueue *mainQueue = malloc(sizeof(PacketQueue));
-  PacketQueue *priorityQueue = malloc(sizeof(PacketQueue));
+int main() {
+  mainQueue = malloc(sizeof(PacketQueue));
+  priorityQueue = malloc(sizeof(PacketQueue));
   initializeQueues(mainQueue, priorityQueue);
-  
-  initializeSensors();
+
+  initializeSensors(mainQueue, priorityQueue);
   initializeDataCollection();
   initializeDataPacketing();
- 
+
   while(1)
   {
     //collect data for a minute
     minuteLoop();
+
     //enqueue the data into packets
     packetCount = enqueueAllPackets(mainQueue, iteration, packetCount);
     
-    while (getQueueSize(mainQueue) > 4) {pause(10);}
-  
+    while (getQueueSize(mainQueue) > 2) {pause(10); }
     iteration++;
   }  
 }
 
-void initializeSensors() {
+void initializeSensors(PacketQueue *mainQueue, PacketQueue *priorityQueue) {
   //call sensor initialization functions
   imuInitialize();
+  startLtfThread();
+  startRadThread();
+  startGridEyeThread(priorityQueue);
 }  
 
 void initializeDataCollection() {
-  //subscribe sensors to data collection
-  //subscribeInitialize(&printInit);
-  //subscribeEveryTwoSec(&printTwo);
-  //subscribeEveryTwoSecAfter(&printTwoAfter);
-  //subscribeEveryFourSec(&printFour);
-  //subscribeEveryFourSecAfter(&printFourAfter2); 
-  subscribeEveryEightSec(&imuReadEveryEightSec);
+  //subscribe sensors to data collection 
+  subscribeEveryFourSec(&imuReadEveryFourSec);
+  subscribeEveryFourSec(&readUVA);
+  subscribeEveryFourSec(&readUVC);
+  subscribeEveryFourSec(&readTemp1);
+  subscribeEveryFourSec(&readTemp2);
+  subscribeEveryFourSec(&readTemp3);
+  
+  subscribeInitialize(&initLtf);
+  subscribeInitialize(&initRad);
+  subscribeEveryFourSec(&lightToFrequencyRead);
+  subscribeEveryTwoSec(&radiationRead);
 }
 
 void initializeDataPacketing() {
   //subscribe sensors to data packeting
-  //subscribeEachIteration(&test2);
-  //subscribeOddIteration(&testOdd1);
-  //subscribeEvenIteration(&testEven1);
-  subscribeEachIteration(&getAccelXPacket);
-  subscribeEachIteration(&getAccelYPacket);
-  subscribeEachIteration(&getAccelZPacket);
-  subscribeEachIteration(&getGyroXPacket);
-  subscribeEachIteration(&getGyroYPacket);
-  subscribeEachIteration(&getGyroZPacket);
-  subscribeEachIteration(&getMagXPacket);
-  subscribeEachIteration(&getMagYPacket);
-  subscribeEachIteration(&getMagZPacket);
+  subscribeEvenIteration(&getAccelXPacket);
+  subscribeEvenIteration(&getAccelYPacket);
+  subscribeEvenIteration(&getAccelZPacket);
+  subscribeEvenIteration(&getGyroXPacket);
+  subscribeEvenIteration(&getGyroYPacket);
+  subscribeEvenIteration(&getGyroZPacket);
+  subscribeEvenIteration(&getMagXPacket);
+  subscribeEvenIteration(&getMagYPacket);
+  subscribeEvenIteration(&getMagZPacket);
+
+  subscribeOddIteration(&getAccelXCompPacket);
+  subscribeOddIteration(&getAccelYCompPacket);
+  subscribeOddIteration(&getAccelZCompPacket);
+  subscribeOddIteration(&getGyroXCompPacket);
+  subscribeOddIteration(&getGyroYCompPacket);
+  subscribeOddIteration(&getGyroZCompPacket);
+  subscribeOddIteration(&getMagXCompPacket);
+  subscribeOddIteration(&getMagYCompPacket);
+  subscribeOddIteration(&getMagZCompPacket);
+  
+  subscribeEachIteration(&getUVAPacket);
+  subscribeEachIteration(&getUVCPacket);
+  subscribeEachIteration(&getTemp1Packet);
+  subscribeEachIteration(&getTemp2Packet);
+  subscribeEachIteration(&getTemp3Packet);
+  
+  subscribeEachIteration(&getRadiationPacket);
+  subscribeEachIteration(&getLightToFrequencyPacket);
 }  
 
 void initializeQueues(PacketQueue *mainQueue, PacketQueue *priorityQueue) {

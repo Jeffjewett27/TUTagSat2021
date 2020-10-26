@@ -20,3 +20,5 @@ typedef struct Packet Packet;
 #endif
 
 void setPacketHeader(Packet *packet, uint8_t fnCode, uint8_t iteration, uint8_t packetsCounter);
+
+void makePacketDataZero(Packet *packet);

@@ -70,21 +70,35 @@ Utilities:
 Packet List:
 GeneralSensor: DESCOPED
 IMU:
--mag [4x8]
--acc [4x8]
--gyro [4x8]
--magCompressed (xyz) [2x16]
--accCompressed (xyz) [2x16]
--gyroCompressed (xyz) [2x16]
+-accxcomp [2x16]: 0x20
+-accycomp [2x16]: 0x21
+-acczcomp [2x16]: 0x22
+-gyroxcomp [2x16]: 0x23
+-gyroycomp [2x16]: 0x24
+-gyrozcomp [2x16]: 0x25
+-magxcomp [2x16]: 0x26
+-magycomp [2x16]: 0x27
+-magzcomp [2x16]: 0x28
+-accx [4x8]: 0x40
+-accy [4x8]: 0x41
+-accz [4x8]: 0x42
+-gyrox [4x8]: 0x43
+-gyroy [4x8]: 0x44
+-gyroz [4x8]: 0x45
+-magx [4x8]: 0x46
+-magy [4x8]: 0x47
+-magz [4x8]: 0x48
 GridEye:
--image (3 segments, abc) -> priority queue
+-imga: 0x30
+-imgb: 0x31
+-imgc: 0x32
 BitFlip:
--detected -> priority queue
+-detected: 0x33
 Analog:
--uva [4x8]
--uvc [4x8]
--temp1 [4x8]
--temp2 [4x8]
--temp3 [4x8]
+-uva [4x8]: 0x11
+-uvc [4x8]: 0x12
+-temp1 [4x8]: 0x13
+-temp2 [4x8]: 0x14
+-temp3 [4x8]: 0x15
 PulseCount:
 -15 ltf, 1 radiation [ltf1,ltf1,ltf2,ltf2,...,ltf15,ltf15, rad1, 0x0]

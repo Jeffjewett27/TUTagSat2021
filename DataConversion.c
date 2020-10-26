@@ -40,6 +40,7 @@ uint16_t reduceFloat16bit(float f, int isSigned, uint8_t k) {
 }  
 
 
+//only used for data analysis
 /* 'extendFloatFrom16bit'
   extends a 16 bit float to a single precision float
   parameters:
@@ -48,7 +49,7 @@ uint16_t reduceFloat16bit(float f, int isSigned, uint8_t k) {
     k- how many bits of the exponent are stored (k <= 8)
     the rest of the bits will fill in the fraction
 */
-float extendFloatFrom16bit(uint16_t b, int isSigned, int k) {
+/*float extendFloatFrom16bit(uint16_t b, int isSigned, int k) {
   if (isSigned != 0) {
     isSigned = 1; //ensure we don't get an odd value
   }    
@@ -74,4 +75,4 @@ float extendFloatFrom16bit(uint16_t b, int isSigned, int k) {
   uint32_t val = (exp << 23) + frac + (sign << 31); //join components together
   float f = *((float *)&val); //cast back to float
   return f;
-}
+}*/
