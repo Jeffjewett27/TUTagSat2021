@@ -29,7 +29,7 @@ void readUVC(int i) {
 Packet getUVAPacket(uint8_t iter, uint8_t pc) {
   Packet packet;
   setPacketHeader(&packet, UVA_FN_CODE, iter, pc);
-  for (int i = 0; i < 16; i++) {
+  for (int i = 0; i < PACKET_NUM_2_BYTE; i++) {
     packet.ArrayType.twoByte[i] = uvaValues[i];
   }   
   return packet;
@@ -37,7 +37,7 @@ Packet getUVAPacket(uint8_t iter, uint8_t pc) {
 Packet getUVCPacket(uint8_t iter, uint8_t pc) {
   Packet packet;
   setPacketHeader(&packet, UVC_FN_CODE, iter, pc);
-  for (int i = 0; i < 16; i++) {
+  for (int i = 0; i < PACKET_NUM_2_BYTE; i++) {
     packet.ArrayType.twoByte[i] = uvcValues[i];
   }   
   return packet;

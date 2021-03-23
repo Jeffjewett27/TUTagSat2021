@@ -1,5 +1,5 @@
 /*
- * Author: Isaac Wickham and Jeff Jewett
+ * Author: Joseph VanDerHerst and Jeff Jewett
  * Modification Date: 10/6/20
 */
 
@@ -8,11 +8,8 @@
 #include "simpletools.h"
 #include <math.h>
 #include "DataConversion.h"
+#include "Pins.h"
 
-#define IMU_SCL 8
-#define IMU_SDIO 9
-#define IMU_CS_AG 5
-#define IMU_CS_M 6
 #define IMU_EN 27
 #define IMU_FN_CODE_BASE 0x40
 #define IMU_COMP_FN_CODE_BASE 0x20
@@ -82,7 +79,7 @@ float imuTemperatureRead() {
 Packet getDataSheetPacket(uint8_t iter, uint8_t pc, int dataSheetRow) {
   Packet desiredPacket;
   setPacketHeader(&desiredPacket, IMU_FN_CODE_BASE + dataSheetRow, iter, pc);
-  for (int index = 0; index < IMU_NUM_COLS; index+=2) {
+  for (int index = 0; index < PACKET_NUM_4_BYTE; index+=2) {
     desiredPacket.ArrayType.fourByte[index/2] = imuSensorDataSheet[dataSheetRow][index];
   }
 
@@ -92,7 +89,7 @@ Packet getDataSheetPacket(uint8_t iter, uint8_t pc, int dataSheetRow) {
 Packet getDataSheetCompPacket(uint8_t iter, uint8_t pc, int dataSheetRow) {
   Packet desiredPacket;
   setPacketHeader(&desiredPacket, IMU_COMP_FN_CODE_BASE + dataSheetRow, iter, pc);
-  for (int index = 0; index < IMU_NUM_COLS; index++) {
+  for (int index = 0; index < PACKET_NUM_2_BYTE; index++) {
     uint16_t comp = reduceFloat16bit(imuSensorDataSheet[dataSheetRow][index], 1, 5);
     desiredPacket.ArrayType.twoByte[index] = comp;
   }

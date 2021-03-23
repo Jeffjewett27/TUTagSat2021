@@ -42,7 +42,7 @@ void readTemp3(int i) {
 Packet getTemp1Packet(uint8_t iter, uint8_t pc) {
   Packet packet;
   setPacketHeader(&packet, TEMP1_FN_CODE, iter, pc);
-  for (int i = 0; i < 16; i++) {
+  for (int i = 0; i < PACKET_NUM_2_BYTE; i++) {
     packet.ArrayType.twoByte[i] = temp1Values[i];
   }   
   return packet;
@@ -50,7 +50,7 @@ Packet getTemp1Packet(uint8_t iter, uint8_t pc) {
 Packet getTemp2Packet(uint8_t iter, uint8_t pc) {
   Packet packet;
   setPacketHeader(&packet, TEMP2_FN_CODE, iter, pc);
-  for (int i = 0; i < 16; i++) {
+  for (int i = 0; i < PACKET_NUM_2_BYTE; i++) {
     packet.ArrayType.twoByte[i] = temp2Values[i];
   }   
   return packet;
@@ -59,7 +59,7 @@ Packet getTemp2Packet(uint8_t iter, uint8_t pc) {
 Packet getTemp3Packet(uint8_t iter, uint8_t pc) {
   Packet packet;
   setPacketHeader(&packet, TEMP3_FN_CODE, iter, pc);
-  for (int i = 0; i < 16; i++) {
+  for (int i = 0; i < PACKET_NUM_2_BYTE; i++) {
     packet.ArrayType.twoByte[i] = temp3Values[i];
   }   
   return packet;

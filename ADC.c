@@ -1,11 +1,8 @@
 #include "simpletools.h"
 #include "ADC.h"
+#include "Pins.h"
 
 int __Mvref = 330;
-int __McsPin = 7;
-int __MclkPin = 8;
-int __MdoPin = 9;
-int __MdiPin = 10;
 int __Mbits = 6;
 int __Mdata = 0b110000;
 int __Mres = 12;

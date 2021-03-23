@@ -48,7 +48,7 @@ void initializeSensors(PacketQueue *mainQueue, PacketQueue *priorityQueue) {
   imuInitialize();
   startLtfThread();
   startRadThread();
-  startGridEyeThread(priorityQueue);
+  //startGridEyeThread(priorityQueue);
 }  
 
 void initializeDataCollection() {

@@ -3,6 +3,10 @@
 
 #include "simpletools.h"
 
+const int PACKET_NUM_1_BYTE = 29;
+const int PACKET_NUM_2_BYTE = 14;
+const int PACKET_NUM_4_BYTE = 7;
+
 //A packet which will be transmitted
 struct Packet {
   uint8_t fnCode;

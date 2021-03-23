@@ -1,10 +1,9 @@
 #include "simpletools.h"
 #include "PulseCount.h"
+#include "Pins.h"
 
 #define UINT16T_MAX 0xffff
 #define UINT8T_MAX 0xff
-#define LTF_PIN 11
-#define RAD_PIN 16
 #define LTF_FN_CODE 0x16
 #define RAD_FN_CODE 0x17
 
@@ -104,7 +103,7 @@ void radiationRead(int i) {
 Packet getLightToFrequencyPacket(uint8_t iter, uint8_t pc) {
   Packet p;
   setPacketHeader(&p, LTF_FN_CODE, iter, pc);
-  for (int i=0; i<16; i++) {
+  for (int i = 0; i < PACKET_NUM_2_BYTE; i++) {
     p.ArrayType.twoByte[i] = ltfPulseCounts[i];
   } 
   return p;
@@ -113,7 +112,7 @@ Packet getLightToFrequencyPacket(uint8_t iter, uint8_t pc) {
 Packet getRadiationPacket(uint8_t iter, uint8_t pc) {
   Packet p;
   setPacketHeader(&p, RAD_FN_CODE, iter, pc);
-  for (int i=0; i<32; i++) {
+  for (int i = 0; i < PACKET_NUM_1_BYTE; i++) {
     p.ArrayType.oneByte[i] = radPulseCounts[i];
   }
   return p;

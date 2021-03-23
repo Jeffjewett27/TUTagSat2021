@@ -6,16 +6,14 @@
 #include "simpletools.h"
 #include "fdserial.h"
 #include "SerialOutput.h"
+#include "Pins.h"
 
-#define BUSY_PIN 24
-#define SERIAL_RX 25
-#define SERIAL_TX 26
+//#define BUSY_PIN 24
 
 const char ACK[] = {0xAA, 0x05, 0x00};
 
 fdserial *sr;
 PacketQueue *packetQueue;
-PacketQueue *priorityQueue;
 int *thread;
 
 //initializes pins
@@ -24,9 +22,8 @@ void initSerial() {
 }  
 
 //starts the serial output thread
-void serialOutputThread(PacketQueue *mainQueue, PacketQueue *priorQueue) {
+void serialOutputThread(PacketQueue *mainQueue) {
   packetQueue = mainQueue;
-  priorityQueue = priorQueue;
   initSerial();
   thread = cog_run(serialOutputLoop, 128);
 }  
@@ -34,25 +31,22 @@ void serialOutputThread(PacketQueue *mainQueue, PacketQueue *priorQueue) {
 //forever waits for busy to drop then sends first element of queue
 void serialOutputLoop() {
   while(1) {
-    while(isSerialBusy()) {
-      pause(100);
-    }
-    //dequeue from priority queue first
-    PacketQueue *usedQueue;
-    if (!isQueueEmpty(priorityQueue)) {
-      usedQueue = priorityQueue;
-    } else if (!isQueueEmpty(packetQueue)) {
-      usedQueue = packetQueue;
-    } else {
-      continue;
-    }
-    Packet packet = peekQueue(usedQueue);
+    //wait until there is a packet to send
+    while(isQueueEmpty(packetQueue)) { pause(100); }
+    //signal that were's ready to send
+    high(RTS_PIN);
+    //wait until it's ready to receive
+    while(input(CTS_PIN)) { pause(100); }
+    //try to send packet
+    Packet packet = peekQueue(packetQueue);
     int attempt = 0;
     do {
         outputPacket(&packet);
     } while (!isSerialACK() && attempt++ < 2);
-    dequeue(usedQueue);
-    pause(1000);
+    //cleanup
+    dequeue(packetQueue);
+    low(RTS_PIN);
+    pause(100);
   }  
 }  
 
@@ -70,7 +64,7 @@ void outputPacket(Packet *packet) {
   fdserial_txChar(sr, packet->iteration);
   fdserial_txChar(sr, packet->packetsCounter);
   
-  for(int i=0; i<32; i++) {
+  for(int i = 0; i < PACKET_NUM_1_BYTE; i++) {
     fdserial_txChar(sr, packet->ArrayType.oneByte[i]);
   }  
 }
@@ -91,7 +85,7 @@ int isSerialACK() {
     }
     response[i] = fdserial_rxChar(sr);
   }
-  int val = 1; //note: safer comparison
+  int val = 1;
   for (int i = 0; i < numACKBytes; ++i) {
     if (ACK[i] != response[i]) {
       val = 0;
@@ -101,6 +95,6 @@ int isSerialACK() {
 }  
 
 //checks the busy pin
-int isSerialBusy() {
+/*int isSerialBusy() {
   return input(BUSY_PIN);
-}
+}*/
