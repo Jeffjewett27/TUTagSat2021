@@ -7,15 +7,15 @@
 #define EEPROM_SCL 28
 #define EEPROM_SDA 29
 //ADC pins
-#define __McsPin = 7;
-#define __MclkPin = 8;
-#define __MdoPin = 9;
-#define __MdiPin = 10;
+#define __McsPin 7
+#define __MclkPin 8
+#define __MdoPin 9
+#define __MdiPin 10
 //SerialOutput pins
-#define RTS_PIN 23
-#define CTS_PIN 24
-#define SERIAL_RX 25
-#define SERIAL_TX 26
+#define RTS_PIN 13
+#define CTS_PIN 12
+#define SERIAL_RX 14
+#define SERIAL_TX 15
 //PulseCount
 #define LTF_PIN 11
-#define RAD_PIN 16
+#define RAD_PIN 24

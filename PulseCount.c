@@ -10,8 +10,12 @@
 volatile uint16_t ltfCount = 0;  //Count of pulses
 volatile int ltfOverflow = 0;
 volatile int ltfReset = 0;
+volatile uint16_t ltfRemainder = 0;
 uint16_t ltfPulseCounts[16];     //Array of 1 minute's worth of pulse counts
 int *ltfCog;
+//set the number of low-end bits to ignore (shifts values by n bits)
+const int ltfRoundBits = 2;
+const int ltfRoundMask = 0x3; //(1 << ltfRoundBits) - 1
 
 volatile uint8_t radCount = 0; 
 volatile int radOverflow = 0; 
@@ -34,7 +38,10 @@ void ltfThread() {
       initLtf();
     }
     int temp = ltfCount;
-    temp += count(LTF_PIN, 10);
+    uint16_t ncount = count(LTF_PIN, 10) + ltfRemainder;
+    temp += ncount >> ltfRoundBits;
+    ltfRemainder = ncount & ltfRoundMask;
+
     if (temp > UINT16T_MAX) {
       ltfOverflow = 1;
     }
@@ -46,6 +53,7 @@ void initLtf() {
   ltfCount = 0;
   ltfOverflow = 0;
   ltfReset = 0;
+  ltfRemainder = 0;
 }
 
 uint16_t ltfReadReset() {

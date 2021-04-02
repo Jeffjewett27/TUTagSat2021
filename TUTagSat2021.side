@@ -30,6 +30,7 @@ UVSensor.c
 UVSensor.h
 Vector3.c
 Vector3.h
+DataCollection.c
 >compiler=C
 >memtype=cmm main ram compact
 >optimize=-Os

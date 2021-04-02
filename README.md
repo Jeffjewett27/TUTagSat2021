@@ -33,12 +33,10 @@ Taylor University's TagSat2021 code in partnership with NSL. Based off TUSatelli
    - 64KB = 512Kb
 - UVA (analog)
    - units: Amps per Watts/cm2
-   - equation: amps = `a*UVA power + b` (determine constants)
 - UVC (analog)
    - units: Amps per Watts/cm2
-   - equation: amps = `a*UVA power + b` (determine constants)
 - Temperature (analog)
-   - 10 mV/°C scale factor (determine constant offset?)
+   - 10 mV/°C scale factor
 - Radiation (pulse count)
    - 5 cpm/µSv/h
 - Light to Frequency (pulse count)
@@ -56,17 +54,7 @@ Taylor University's TagSat2021 code in partnership with NSL. Based off TUSatelli
 
 ## Packet List
 
-- GeneralSensor: **DESCOPED**
 - IMU:
-   - accxcomp [2x16]: 0x20
-   - accycomp [2x16]: 0x21
-   - acczcomp [2x16]: 0x22
-   - gyroxcomp [2x16]: 0x23
-   - gyroycomp [2x16]: 0x24
-   - gyrozcomp [2x16]: 0x25
-   - magxcomp [2x16]: 0x26
-   - magycomp [2x16]: 0x27
-   - magzcomp [2x16]: 0x28
    - accx [4x8]: 0x40
    - accy [4x8]: 0x41
    - accz [4x8]: 0x42
@@ -85,4 +73,5 @@ Taylor University's TagSat2021 code in partnership with NSL. Based off TUSatelli
    - temp2 [4x8]: 0x14
    - temp3 [4x8]: 0x15
 - PulseCount:
-   - 15 ltf, 1 radiation [ltf1,ltf1,ltf2,ltf2,...,ltf15,ltf15, rad1, 0x0]
+   - ltf [2x16]: 0x16
+   - rad [1x32]: 0x17

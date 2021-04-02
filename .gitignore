@@ -1,5 +1,8 @@
 **/cmm
 **/info
+**/test/*.txt
+**/test/*.csv
+**/test/__pycache__
 *.elf
 *.binary
 *.side

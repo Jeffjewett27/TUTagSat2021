@@ -68,9 +68,9 @@ void initializeDataCollection() {
 
 void initializeDataPacketing() {
   //subscribe sensors to data packeting
-  subscribeEvenIteration(&getAccelXPacket);
-  subscribeEvenIteration(&getAccelYPacket);
-  subscribeEvenIteration(&getAccelZPacket);
+  //subscribeEvenIteration(&getAccelXPacket);
+  //subscribeEvenIteration(&getAccelYPacket);
+  //subscribeEvenIteration(&getAccelZPacket);
   subscribeEvenIteration(&getGyroXPacket);
   subscribeEvenIteration(&getGyroYPacket);
   subscribeEvenIteration(&getGyroZPacket);
@@ -78,15 +78,15 @@ void initializeDataPacketing() {
   subscribeEvenIteration(&getMagYPacket);
   subscribeEvenIteration(&getMagZPacket);
 
-  subscribeOddIteration(&getAccelXCompPacket);
-  subscribeOddIteration(&getAccelYCompPacket);
-  subscribeOddIteration(&getAccelZCompPacket);
-  subscribeOddIteration(&getGyroXCompPacket);
-  subscribeOddIteration(&getGyroYCompPacket);
-  subscribeOddIteration(&getGyroZCompPacket);
-  subscribeOddIteration(&getMagXCompPacket);
-  subscribeOddIteration(&getMagYCompPacket);
-  subscribeOddIteration(&getMagZCompPacket);
+  //subscribeOddIteration(&getAccelXCompPacket);
+  //subscribeOddIteration(&getAccelYCompPacket);
+  //subscribeOddIteration(&getAccelZCompPacket);
+  //subscribeOddIteration(&getGyroXCompPacket);
+  //subscribeOddIteration(&getGyroYCompPacket);
+  //subscribeOddIteration(&getGyroZCompPacket);
+  //subscribeOddIteration(&getMagXCompPacket);
+  //subscribeOddIteration(&getMagYCompPacket);
+  //subscribeOddIteration(&getMagZCompPacket);
   
   subscribeEachIteration(&getUVAPacket);
   subscribeEachIteration(&getUVCPacket);
@@ -101,5 +101,5 @@ void initializeDataPacketing() {
 void initializeQueues(PacketQueue *mainQueue, PacketQueue *priorityQueue) {
   initializeQueue(mainQueue);
   initializeQueue(priorityQueue);
-  serialOutputThread(mainQueue, priorityQueue);
+  serialOutputThread(mainQueue);
 }  

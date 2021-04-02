@@ -18,7 +18,7 @@ int *thread;
 
 //initializes pins
 void initSerial() {
-  sr = fdserial_open(SERIAL_RX, SERIAL_TX, 0, 38400);
+  sr = fdserial_open(SERIAL_RX, SERIAL_TX, FDSERIAL_MODE_OPENDRAIN_TX, 38400);
 }  
 
 //starts the serial output thread
@@ -36,7 +36,7 @@ void serialOutputLoop() {
     //signal that were's ready to send
     high(RTS_PIN);
     //wait until it's ready to receive
-    while(input(CTS_PIN)) { pause(100); }
+    while(!input(CTS_PIN)) { pause(100); }
     //try to send packet
     Packet packet = peekQueue(packetQueue);
     int attempt = 0;
@@ -61,7 +61,7 @@ void outputPacket(Packet *packet) {
   fdserial_txChar(sr, 0x50);
 
   fdserial_txChar(sr, packet->fnCode);
-  fdserial_txChar(sr, packet->iteration);
+  //fdserial_txChar(sr, packet->iteration);
   fdserial_txChar(sr, packet->packetsCounter);
   
   for(int i = 0; i < PACKET_NUM_1_BYTE; i++) {
