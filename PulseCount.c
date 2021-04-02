@@ -6,6 +6,8 @@
 #define UINT8T_MAX 0xff
 #define LTF_FN_CODE 0x16
 #define RAD_FN_CODE 0x17
+#define PCLESS_FN_CODE 0x18
+#define PCMORE_FN_CODE 0x19
 
 volatile uint16_t ltfCount = 0;  //Count of pulses
 volatile int ltfOverflow = 0;
@@ -125,3 +127,31 @@ Packet getRadiationPacket(uint8_t iter, uint8_t pc) {
   }
   return p;
 } 
+
+Packet getPulseCountPacket(uint8_t iter, uint8_t pc) {
+  Packet p;
+  setPacketHeader(&p, PCLESS_FN_CODE, iter, pc);
+  for (int i = 0; i < 13; i++) {
+    p.ArrayType.twoByte[i] = ltfPulseCounts[i];
+  }    
+  for (int i = 0; i < 4; i++) {
+    //group data in pairs
+    int val = radPulseCounts[i] + radPulseCounts[i+1];
+    p.ArrayType.oneByte[26 + i] = val;
+  }  
+  return p;  
+}  
+
+Packet getPCMoreRadPacket(uint8_t iter, uint8_t pc) {
+  Packet p;
+  setPacketHeader(&p, PCMORE_FN_CODE, iter, pc);
+  for (int i = 0; i < 11; i++) {
+    p.ArrayType.twoByte[i] = ltfPulseCounts[i];
+  }    
+  for (int i = 0; i < 8; i++) {
+    //group data in pairs
+    int val = radPulseCounts[i] + radPulseCounts[i+1];
+    p.ArrayType.oneByte[22 + i] = val;
+  }  
+  return p;  
+}  

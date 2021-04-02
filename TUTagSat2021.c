@@ -63,10 +63,21 @@ void initializeDataCollection() {
   subscribeInitialize(&initLtf);
   subscribeInitialize(&initRad);
   subscribeEveryFourSec(&lightToFrequencyRead);
-  subscribeEveryTwoSec(&radiationRead);
+  subscribeEveryEightSec(&radiationRead);
 }
 
 void initializeDataPacketing() {
+  subscribeEachIteration(&getUVAPacket);
+  subscribeEachIteration(&getUVCPacket);
+  subscribeEachIteration(&getTemp1Packet);
+  subscribeEachIteration(&getTemp2Packet);
+  subscribeEachIteration(&getTemp3Packet);
+  
+  //subscribeEachIteration(&getRadiationPacket);
+  //subscribeEachIteration(&getLightToFrequencyPacket);
+  subscribeEvenIteration(&getPulseCountPacket);
+  subscribeOddIteration(&getPCMoreRadPacket);
+  
   //subscribe sensors to data packeting
   //subscribeEvenIteration(&getAccelXPacket);
   //subscribeEvenIteration(&getAccelYPacket);
@@ -87,15 +98,6 @@ void initializeDataPacketing() {
   //subscribeOddIteration(&getMagXCompPacket);
   //subscribeOddIteration(&getMagYCompPacket);
   //subscribeOddIteration(&getMagZCompPacket);
-  
-  subscribeEachIteration(&getUVAPacket);
-  subscribeEachIteration(&getUVCPacket);
-  subscribeEachIteration(&getTemp1Packet);
-  subscribeEachIteration(&getTemp2Packet);
-  subscribeEachIteration(&getTemp3Packet);
-  
-  subscribeEachIteration(&getRadiationPacket);
-  subscribeEachIteration(&getLightToFrequencyPacket);
 }  
 
 void initializeQueues(PacketQueue *mainQueue, PacketQueue *priorityQueue) {

@@ -12,7 +12,14 @@ def splitPacket(packet):
     pc = packet[8:10]
     payload = packet[10:]
     func = fnmap.get(fncode) or ("UNKN",hex2uint16,2)
-    values = splitPayload(payload,func[1],func[2])
+    if (fncode == "18"):
+        values = splitPayload(payload[:52],hex2uint16,2)
+        values = values + splitPayload(payload[52:],hex2uint8,1)
+    elif (fncode == "19"):
+        values = splitPayload(payload[:44],hex2uint16,2)
+        values = values + splitPayload(payload[44:],hex2uint8,1)
+    else:
+        values = splitPayload(payload,func[1],func[2])
     return [(func[0],fncode,pc,v[0],v[1],i) for i,v in enumerate(values)]
 
 def hex2float(hex):
@@ -47,7 +54,9 @@ fnmap = {
     '14': ("TMP2",hex2uint16, 2),
     '15': ("TMP3",hex2uint16, 2),
     '16': ("LTF",hex2uint16, 2),
-    '17': ("RAD",hex2uint8, 1)
+    '17': ("RAD",hex2uint8, 1),
+    '18': ("PULS",)
+    '19': ("PULS+",)
 }
 
 def deserialize_raw(path):

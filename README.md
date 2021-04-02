@@ -54,7 +54,7 @@ Taylor University's TagSat2021 code in partnership with NSL. Based off TUSatelli
 
 ## Packet List
 
-- IMU:
+- IMU (float32 values):
    - accx [4x8]: 0x40
    - accy [4x8]: 0x41
    - accz [4x8]: 0x42
@@ -64,14 +64,12 @@ Taylor University's TagSat2021 code in partnership with NSL. Based off TUSatelli
    - magx [4x8]: 0x46
    - magy [4x8]: 0x47
    - magz [4x8]: 0x48
-- BitFlip:
-   - detected: 0x33
-- Analog:
+- Analog (uint16_t values):
    - uva [4x8]: 0x11
    - uvc [4x8]: 0x12
    - temp1 [4x8]: 0x13
    - temp2 [4x8]: 0x14
    - temp3 [4x8]: 0x15
-- PulseCount:
+- PulseCount (uint16_t):
    - ltf [2x16]: 0x16
    - rad [1x32]: 0x17

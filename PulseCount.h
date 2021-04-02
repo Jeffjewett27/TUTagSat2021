@@ -15,3 +15,5 @@ void radiationRead(int i);
 
 Packet getLightToFrequencyPacket(uint8_t iter, uint8_t pc);
 Packet getRadiationPacket(uint8_t iter, uint8_t pc);
+Packet getPulseCountPacket(uint8_t iter, uint8_t pc);
+Packet getPCMoreRadPacket(uint8_t iter, uint8_t pc);
