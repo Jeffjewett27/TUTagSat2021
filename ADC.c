@@ -2,7 +2,7 @@
 #include "ADC.h"
 #include "Pins.h"
 
-int __Mvref = 330;
+int __Mvref = 3300;
 int __Mbits = 6;
 int __Mdata = 0b110000;
 int __Mres = 12;
